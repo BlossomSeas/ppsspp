@@ -507,6 +507,8 @@ else ifneq (,$(findstring win,$(platform)))
    fpic = -fPIC
 	CC = gcc
 	CXX = g++
+	CFLAGS += -MMD -MP
+	CXXFLAGS += -MMD -MP
 endif
 
 include Makefile.common
@@ -561,15 +563,22 @@ else
    LDFLAGS += -Wl,--gc-sections
 endif
 
-all: $(TARGET)
+all: reset_cache $(TARGET)
+
+reset_cache:
+	rm -f cache.list
 
 %.o: %.S
 	$(AS) $(CFLAGS) -c $(OBJOUT)$@ $<
 
 %.o: %.c
+	@echo "$(basename $@).o" >> "cache.list"
+	@echo "$(basename $@).d" >> "cache.list"
 	$(CC) $(CFLAGS) -c $(OBJOUT)$@ $<
 
 %.o: %.cpp
+	@echo "$(basename $@).o" >> "cache.list"
+	@echo "$(basename $@).d" >> "cache.list"
 	$(CXX) $(CXXFLAGS) -c $(OBJOUT)$@ $<
 
 $(TARGET): $(OBJECTS)
@@ -581,8 +590,11 @@ endif
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
+	rm -f *.d *.dll
 
 .PHONY: clean
 
 print-%:
 	@echo '$*=$($*)'
+
+-include $(OBJECTS:%.o=%.d)
