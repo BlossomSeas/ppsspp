@@ -563,22 +563,15 @@ else
    LDFLAGS += -Wl,--gc-sections
 endif
 
-all: reset_cache $(TARGET)
-
-reset_cache:
-	rm -f cache.list
+all: $(TARGET)
 
 %.o: %.S
 	$(AS) $(CFLAGS) -c $(OBJOUT)$@ $<
 
 %.o: %.c
-	@echo "$(basename $@).o" >> "cache.list"
-	@echo "$(basename $@).d" >> "cache.list"
 	$(CC) $(CFLAGS) -c $(OBJOUT)$@ $<
 
 %.o: %.cpp
-	@echo "$(basename $@).o" >> "cache.list"
-	@echo "$(basename $@).d" >> "cache.list"
 	$(CXX) $(CXXFLAGS) -c $(OBJOUT)$@ $<
 
 $(TARGET): $(OBJECTS)
