@@ -35,6 +35,7 @@
 #endif
 
 #if PPSSPP_API(D3D11)
+#define	_Inout_opt_bytecount_(size)
 #include "GPU/D3D11/GPU_D3D11.h"
 #endif
 

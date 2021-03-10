@@ -30,6 +30,32 @@
 namespace net {
 
 
+const char* inet_ntop_(int af, const void* src, char *dst, size_t size)
+{
+#if defined(_WIN32) && !defined(inet_ntop)
+	struct sockaddr_in server_addr;
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = af;
+	memcpy(&server_addr.sin_addr, src, sizeof(server_addr.sin_addr));
+
+
+	DWORD dst_len = size;
+
+	// Windows XP doesn't support inet_ntop.
+	if(WSAAddressToStringA((struct sockaddr *)&server_addr, sizeof(sockaddr_in), nullptr, dst, &dst_len) != 0) {
+		return dst;
+	}
+	else {
+		return NULL;
+	}
+#else
+	return inet_ntop(af, src, dst, size);
+#endif
+}
+
+
+
 void Init()
 {
 #ifdef _WIN32
@@ -118,7 +144,7 @@ bool GetIPList(std::vector<std::string> &IP4s) {
 			}
 			if (ifa->ifa_addr->sa_family == AF_INET) {
 				// is a valid IP4 Address
-				if (inet_ntop(AF_INET, &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr, ipstr, sizeof(ipstr)) != 0) {
+				if (inet_ntop_(AF_INET, &((struct sockaddr_in*)ifa->ifa_addr)->sin_addr, ipstr, sizeof(ipstr)) != 0) {
 					IP4s.push_back(ipstr);
 				}
 			}
@@ -151,7 +177,7 @@ bool GetIPList(std::vector<std::string> &IP4s) {
 	{
 		if (ifreqs[i].ifr_addr.sa_family == AF_INET) {
 			// is a valid IP4 Address
-			if (inet_ntop(AF_INET, &((struct sockaddr_in*)&ifreqs[i].ifr_addr)->sin_addr, ipstr, sizeof(ipstr)) != 0) {
+			if (inet_ntop_(AF_INET, &((struct sockaddr_in*)&ifreqs[i].ifr_addr)->sin_addr, ipstr, sizeof(ipstr)) != 0) {
 				IP4s.push_back(ipstr);
 			}
 		}
@@ -185,7 +211,7 @@ bool GetIPList(std::vector<std::string> &IP4s) {
 	for (p = res; p != NULL; p = p->ai_next) {
 		if (p->ai_family == AF_INET) {
 			// is a valid IP4 Address
-			if (inet_ntop(p->ai_family, &(((struct sockaddr_in*)p->ai_addr)->sin_addr), ipstr, sizeof(ipstr)) != 0) {
+			if (inet_ntop_(p->ai_family, &(((struct sockaddr_in*)p->ai_addr)->sin_addr), ipstr, sizeof(ipstr)) != 0) {
 				IP4s.push_back(ipstr);
 			}
 		}

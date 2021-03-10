@@ -10,6 +10,10 @@
 #define NOMINMAX
 #endif
 
+#if defined(__MINGW32__) && !defined(__NO_MINGW_DEFINES__)
+#include "../Windows/mingw_defines.h"
+#endif
+
 #include <Windows.h>
 
 #undef min

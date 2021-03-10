@@ -23,6 +23,7 @@
 
 #include "ppsspp_config.h"
 #ifdef _WIN32
+#define __NO_MINGW_DEFINES__
 #include "Common/CommonWindows.h"
 #include <WindowsX.h>
 #else

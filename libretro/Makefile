@@ -498,7 +498,7 @@ else ifneq (,$(findstring win,$(platform)))
 	PLATFORM_EXT := win32
    FFMPEGINCFLAGS += -I$(FFMPEGDIR)/Windows/$(TARGET_ARCH)/include
    FFMPEGLDFLAGS += -lavformat -lavcodec -lavutil -lswresample -lswscale
-   INCFLAGS += -include $(CORE_DIR)/Windows/mingw_defines.h
+   # INCFLAGS += -include $(CORE_DIR)/Windows/mingw_defines.h
    ifneq (,$(findstring 64,$(TARGET_ARCH)))
 		LDFLAGS += -L$(CORE_DIR)/dx9sdk/Lib/x64
 	else
