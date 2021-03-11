@@ -570,13 +570,13 @@ all: $(TARGET)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $(OBJOUT)$@ $<
-	@echo "$(basename $@).o" >> "cache.list"
-	@echo "$(basename $@).d" >> "cache.list"
+	@echo "$(basename $@).o" -n >> "cache.list"
+	@echo "$(basename $@).d" -n >> "cache.list"
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $(OBJOUT)$@ $<
-	@echo "$(basename $@).o" >> "cache.list"
-	@echo "$(basename $@).d" >> "cache.list"
+	@echo "$(basename $@).o" -n >> "cache.list"
+	@echo "$(basename $@).d" -n >> "cache.list"
 
 $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
