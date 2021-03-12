@@ -570,13 +570,13 @@ all: $(TARGET)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $(OBJOUT)$@ $<
-	Add-Content -Path "cache.list" -Value "$(basename $@).o " -NoNewLine
-	Add-Content -Path "cache.list" -Value "$(basename $@).d " -NoNewLine
+	@echo -n "$(basename $@).o" >> "cache.list"
+	@echo -n "$(basename $@).d" >> "cache.list"
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $(OBJOUT)$@ $<
-	Add-Content -Path "cache.list" -Value "$(basename $@).o " -NoNewLine
-	Add-Content -Path "cache.list" -Value "$(basename $@).d " -NoNewLine
+	@echo -n "$(basename $@).o" >> "cache.list"
+	@echo -n "$(basename $@).d" >> "cache.list"
 
 $(TARGET): $(OBJECTS)
 ifeq ($(STATIC_LINKING), 1)
