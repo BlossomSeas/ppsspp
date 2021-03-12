@@ -1,0 +1,106 @@
+#
+# Builds project files
+#
+
+
+clone_depth: 1
+
+
+
+environment:
+
+  GIT_SCRIPT: BlossomSeas
+
+
+  COMPILER: win32-gcc-posix
+  PROJECT: 
+  SOLUTION: libretro/Makefile
+  CONFIGURATION: libretro
+
+
+  CACHE: yes
+
+
+  GIT_TOKEN:
+    secure: nfDVTPJ5JKN66ly+Jk+VSnnSSCDe2ZsbF7zawNwKpZ4FGOhqpG2sJIBcEhi7orr2
+
+
+  matrix:
+    - Platform: windows_desktop_x86
+      TARGET_ARCH: x86
+
+    #- Platform: windows_desktop_x64
+    #  TARGET_ARCH: x86_64
+
+
+
+artifacts:
+  - path: '**\*libretro.dll'
+
+
+
+
+build_script:
+
+  - ps: |
+
+      $env:OLD_HEAD = git rev-parse HEAD
+
+
+      try {
+        iex( (New-Object System.Net.WebClient).DownloadString("https://github.com/${env:GIT_SCRIPT}/appveyor-git/raw/main/script/script.ps1") )
+
+        run_script "build/build.ps1"
+      }
+
+
+      catch {
+        throw "$_"
+      }
+
+
+
+      ##################################
+
+
+
+  - ps: |
+      git_merge mingw
+
+      git_merge build_cache
+      # Move-Item -Path ${env:APPVEYOR_BUILD_FOLDER}/appveyor.yml -Destination ${env:APPVEYOR_BUILD_FOLDER}/ext/glslang/glslang/GenericCodeGen/CodeGen.cpp -Force
+
+
+      run_script "build/cache_read.ps1"
+
+
+      # Save old changes
+      git add . --all
+      git commit -m "old changes" --quiet --all
+
+      echo "`n"
+
+
+
+  - cmd: |
+      cmd.exe /c %Build%
+
+
+
+
+on_success:
+
+  - ps: |
+      $env:BUILD_SUCCESS = 1
+
+
+
+
+on_finish:
+
+  - ps: |
+      run_script "build/cache_write.ps1"
+
+
+      7z a build_cache.7z "-ir!.\*.o" "-ir!.\*.d" "-mx=1"
+      Push-AppveyorArtifact "build_cache.7z"
