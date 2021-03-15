@@ -78,6 +78,7 @@ build_script:
       git commit -m "old changes" --quiet
 
       echo "`n"
+      cd ${env:APPVEYOR_BUILD_FOLDER}/${env:BUILD_PATH}
 
 
 
