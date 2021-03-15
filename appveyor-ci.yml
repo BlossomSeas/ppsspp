@@ -43,7 +43,6 @@ artifacts:
 build_script:
 
   - ps: |
-
       $env:OLD_HEAD = git rev-parse HEAD
 
 
@@ -74,9 +73,9 @@ build_script:
       run_script "build/cache_read.ps1"
 
 
-      # Save old changes
-      git add . --all
-      git commit -m "old changes" --quiet --all
+      # Save temp changes
+      git add .
+      git commit -m "old changes" --quiet
 
       echo "`n"
 
@@ -100,7 +99,3 @@ on_finish:
 
   - ps: |
       run_script "build/cache_write.ps1"
-
-
-      7z a build_cache.7z "-ir!.\*.o" "-ir!.\*.d" "-mx=1"
-      Push-AppveyorArtifact "build_cache.7z"
