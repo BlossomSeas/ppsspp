@@ -552,6 +552,8 @@ else ifneq (,$(findstring win,$(platform)))
    fpic = -fPIC
 	CC = gcc
 	CXX = g++
+	CFLAGS += -MMD -MP
+	CXXFLAGS += -MMD -MP
 endif
 
 include Makefile.common
@@ -631,3 +633,5 @@ clean:
 
 print-%:
 	@echo '$*=$($*)'
+
+-include $(OBJECTS:%.o=%.d)

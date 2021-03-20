@@ -1,15 +1,15 @@
 # For MSVC
 *.lastcodeanalysissucceeded
-*.pdb
+!*.pdb
 *.ilk
-*.obj
+!*.obj
 *.pch
 *.log
-*.dll
+!*.dll
 *.rar
-*.exe
+!*.exe
 *.map
-*.lib
+!*.lib
 *.user
 *.sdf
 *.ncb
@@ -109,7 +109,7 @@ debian/ppsspp.substvars
 debian/ppsspp/
 
 # Libretro build
-*.o
+!*.o
 
 # YouCompleteMe file
 .ycm_extra_conf.pyc
