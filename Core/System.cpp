@@ -18,6 +18,17 @@
 #include "ppsspp_config.h"
 
 #ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#if defined(__MINGW32__)
+//#define WINAPI_PARTITION_DESKTOP   0x00000001
+//#define WINAPI_PARTITION_APP       0x00000002    
+//#define WINAPI_FAMILY_APP          WINAPI_PARTITION_APP
+//#define WINAPI_FAMILY_DESKTOP_APP  (WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_APP)    
+//#define WINAPI_FAMILY WINAPI_FAMILY_DESKTOP_APP
+//#define WINAPI_FAMILY_PARTITION(Partition)	((WINAPI_FAMILY & Partition) == Partition)
+#define WINAPI_FAMILY_ONE_PARTITION(PartitionSet, Partition) ((WINAPI_FAMILY & PartitionSet) == Partition)
+#endif
+
 #pragma warning(disable:4091)
 #include "Common/CommonWindows.h"
 #include <ShlObj.h>

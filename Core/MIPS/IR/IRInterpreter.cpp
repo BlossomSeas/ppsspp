@@ -2,6 +2,12 @@
 #include <cmath>
 
 #include "ppsspp_config.h"
+
+#ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#include "Common/CommonWindows.h"
+#endif
+
 #include "Common/BitScan.h"
 #include "Common/Common.h"
 #include "Common/Data/Convert/SmallDataConvert.h"

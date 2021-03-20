@@ -21,6 +21,7 @@
 #include <string> // System: To be able to add strings with "+"
 #include <math.h>
 #ifdef _WIN32
+#define __NO_MINGW_DEFINES__
 #include <process.h>
 #include "CommonWindows.h"
 #include <array>

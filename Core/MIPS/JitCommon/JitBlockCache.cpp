@@ -22,6 +22,7 @@
 #include "Common.h"
 
 #ifdef _WIN32
+#define __NO_MINGW_DEFINES__
 #include "Common/CommonWindows.h"
 #endif
 

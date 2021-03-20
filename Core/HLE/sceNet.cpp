@@ -48,6 +48,12 @@
 #include "Core/Reporting.h"
 #include "Core/Instance.h"
 
+#ifdef __MINGW32__
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
+#include "Common/Net/inet_ntop.h"
+#endif
+
 #if PPSSPP_PLATFORM(SWITCH) && !defined(INADDR_NONE)
 // Missing toolchain define
 #define INADDR_NONE 0xFFFFFFFF

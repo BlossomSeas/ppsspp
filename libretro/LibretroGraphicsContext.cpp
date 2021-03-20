@@ -1,10 +1,13 @@
+#ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#endif
 
 #include "libretro/LibretroGraphicsContext.h"
 #include "libretro/LibretroGLContext.h"
 #include "libretro/LibretroGLCoreContext.h"
 #include "libretro/libretro.h"
 #include "libretro/LibretroVulkanContext.h"
-#ifdef _WIN32
+#ifdef _WIN32_DX11
 #include "libretro/LibretroD3D11Context.h"
 #endif
 
@@ -122,7 +125,7 @@ LibretroGraphicsContext *LibretroGraphicsContext::CreateGraphicsContext() {
 		delete ctx;
 	}
 
-#ifdef _WIN32
+#ifdef _WIN32_DX11
 	if (preferred == RETRO_HW_CONTEXT_DUMMY || preferred == RETRO_HW_CONTEXT_DIRECT3D) {
 		ctx = new LibretroD3D11Context();
 

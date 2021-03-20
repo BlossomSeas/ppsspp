@@ -657,7 +657,7 @@ SOURCES_CXX += \
 	$(LIBRETRODIR)/libretro_vulkan.cpp
 
 
-ifeq ($(PLATFORM_EXT), win32)
+ifeq ($(PLATFORM_EXT), win32_dx11)
 SOURCES_CXX += \
 	$(GPUDIR)/Directx9/DepalettizeShaderDX9.cpp \
 	$(GPUDIR)/Directx9/DrawEngineDX9.cpp \

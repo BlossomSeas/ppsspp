@@ -1,6 +1,8 @@
 
 /* these defines are needed when using the msvc headers from the dx9sdk directory with mingw */
 
+#if defined(__MINGW32__) && !defined(__NO_MINGW_DEFINES__)
+
 #pragma once
 
 #define WINAPI_FAMILY_ONE_PARTITION(vset, v) ((WINAPI_FAMILY & vset) == v)
@@ -235,3 +237,5 @@
 #define _Inout_opt_bytecount_(s)
 
 #define __reserved
+
+#endif

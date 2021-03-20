@@ -24,6 +24,7 @@
 #include "ppsspp_config.h"
 
 #if defined(_WIN32)
+#define __NO_MINGW_DEFINES__
 #include <WinSock2.h>
 #include "Common/CommonWindows.h"
 #endif
@@ -71,6 +72,15 @@
 #if PPSSPP_PLATFORM(SWITCH) && !defined(INADDR_NONE)
 // Missing toolchain define
 #define INADDR_NONE 0xFFFFFFFF
+#endif
+
+#if defined(__MINGW32__)
+// note: see VS 2017 compatibility below
+#define TCP_KEEPALIVE 3
+#define TCP_MAXSEG 4
+#define TCP_KEEPCNT 16
+#define TCP_KEEPINTVL 17
+//SO_KEEPALIVE
 #endif
 
 uint16_t portOffset;
@@ -1803,7 +1813,8 @@ int getLocalIp(sockaddr_in* SocketAddress) {
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET; // AF_UNSPEC;
 	hints.ai_socktype = SOCK_DGRAM;
-	hints.ai_flags = AI_ADDRCONFIG; // getaddrinfo with AI_ADDRCONFIG will fail when there is no local network connected? https://github.com/stephane/libmodbus/issues/575
+	//Windows XP missing; normally return v4 or v6 depending on setting
+	//hints.ai_flags = AI_ADDRCONFIG; // getaddrinfo with AI_ADDRCONFIG will fail when there is no local network connected? https://github.com/stephane/libmodbus/issues/575
 	// Note: getaddrinfo could cause freezes on Android if there is no network https://github.com/hrydgard/ppsspp/issues/13300
 	if (getaddrinfo(szHostName, NULL, &hints, &res) == 0 && res != NULL) {
 		memcpy(&SocketAddress->sin_addr, &((struct sockaddr_in*)res->ai_addr)->sin_addr, sizeof(SocketAddress->sin_addr));
@@ -1874,15 +1885,15 @@ static std::vector<std::pair<uint32_t, uint32_t>> InitPrivateIPRanges() {
 	struct sockaddr_in saNet, saMask;
 	std::vector<std::pair<uint32_t, uint32_t>> ip_ranges;
 
-	if (1 == inet_pton(AF_INET, "192.168.0.0", &(saNet.sin_addr)) && 1 == inet_pton(AF_INET, "255.255.0.0", &(saMask.sin_addr)))
+	if (1 == net::inet_pton(AF_INET, "192.168.0.0", &(saNet.sin_addr)) && 1 == net::inet_pton(AF_INET, "255.255.0.0", &(saMask.sin_addr)))
 		ip_ranges.push_back({saNet.sin_addr.s_addr, saMask.sin_addr.s_addr});
-	if (1 == inet_pton(AF_INET, "172.16.0.0", &(saNet.sin_addr)) && 1 == inet_pton(AF_INET, "255.240.0.0", &(saMask.sin_addr)))
+	if (1 == net::inet_pton(AF_INET, "172.16.0.0", &(saNet.sin_addr)) && 1 == net::inet_pton(AF_INET, "255.240.0.0", &(saMask.sin_addr)))
 		ip_ranges.push_back({ saNet.sin_addr.s_addr, saMask.sin_addr.s_addr });
-	if (1 == inet_pton(AF_INET, "10.0.0.0", &(saNet.sin_addr)) && 1 == inet_pton(AF_INET, "255.0.0.0", &(saMask.sin_addr)))
+	if (1 == net::inet_pton(AF_INET, "10.0.0.0", &(saNet.sin_addr)) && 1 == net::inet_pton(AF_INET, "255.0.0.0", &(saMask.sin_addr)))
 		ip_ranges.push_back({ saNet.sin_addr.s_addr, saMask.sin_addr.s_addr });
-	if (1 == inet_pton(AF_INET, "127.0.0.0", &(saNet.sin_addr)) && 1 == inet_pton(AF_INET, "255.0.0.0", &(saMask.sin_addr)))
+	if (1 == net::inet_pton(AF_INET, "127.0.0.0", &(saNet.sin_addr)) && 1 == net::inet_pton(AF_INET, "255.0.0.0", &(saMask.sin_addr)))
 		ip_ranges.push_back({ saNet.sin_addr.s_addr, saMask.sin_addr.s_addr });
-	if (1 == inet_pton(AF_INET, "169.254.0.0", &(saNet.sin_addr)) && 1 == inet_pton(AF_INET, "255.255.0.0", &(saMask.sin_addr)))
+	if (1 == net::inet_pton(AF_INET, "169.254.0.0", &(saNet.sin_addr)) && 1 == net::inet_pton(AF_INET, "255.255.0.0", &(saMask.sin_addr)))
 		ip_ranges.push_back({ saNet.sin_addr.s_addr, saMask.sin_addr.s_addr });
 
 	return ip_ranges;

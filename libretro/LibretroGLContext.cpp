@@ -1,3 +1,6 @@
+#ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#endif
 
 #include "Common/Log.h"
 #include "Core/Config.h"

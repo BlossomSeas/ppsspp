@@ -20,6 +20,11 @@
 #include <cstdio>
 #include <cstring>
 
+#ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#include "Common/CommonWindows.h"
+#endif
+
 #include "Common/BitScan.h"
 #include "Common/CommonFuncs.h"
 #include "Core/Reporting.h"

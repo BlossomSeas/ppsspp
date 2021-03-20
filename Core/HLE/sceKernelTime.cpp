@@ -16,6 +16,7 @@
 // https://github.com/hrydgard/ppsspp and http://www.ppsspp.org/.
 
 #ifdef _WIN32
+#define __NO_MINGW_DEFINES__
 #include "Common/CommonWindows.h"
 #else
 #include <sys/time.h>

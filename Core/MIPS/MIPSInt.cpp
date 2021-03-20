@@ -17,6 +17,11 @@
 
 #include <cmath>
 
+#ifdef _WIN32
+#define __NO_MINGW_DEFINES__
+#include "Common/CommonWindows.h"
+#endif
+
 #include "Common/Data/Convert/SmallDataConvert.h"
 #include "Common/Math/math_util.h"
 
