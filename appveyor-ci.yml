@@ -1,0 +1,107 @@
+#
+# Builds project files
+#
+
+
+clone_depth: 1
+
+
+
+environment:
+
+  GIT_SCRIPT: BlossomSeas
+
+
+  COMPILER: win32-gcc-posix
+  PROJECT: 
+  SOLUTION: libretro/Makefile
+  CONFIGURATION: libretro
+
+
+  CACHE: yes
+
+
+  GIT_TOKEN:
+    secure: nfDVTPJ5JKN66ly+Jk+VSnnSSCDe2ZsbF7zawNwKpZ4FGOhqpG2sJIBcEhi7orr2
+
+
+  matrix:
+    - Platform: windows_desktop_x86
+      TARGET_ARCH: x86
+
+    #- Platform: windows_desktop_x64
+    #  TARGET_ARCH: x86_64
+
+
+
+artifacts:
+  - path: '**\*libretro.dll'
+
+
+
+
+build_script:
+
+  - ps: |
+      try {
+        iex( (New-Object System.Net.WebClient).DownloadString("https://github.com/${env:GIT_SCRIPT}/appveyor-git/raw/main/script/script.ps1") )
+
+        run_script "build/build.ps1"
+      }
+
+
+      catch {
+        throw "$_"
+      }
+
+
+
+      ##################################
+
+
+
+  - ps: |
+      git config --local remote.origin.fetch "${env:REMOTE_ORIGIN_FETCH}"
+      git submodule update --init --recursive --depth 1
+      git config --local remote.origin.fetch "+refs/heads/*:refs/remotes/origin/*"
+
+
+      git_merge mingw
+
+      git_merge build_cache
+      # Move-Item -Path ${env:APPVEYOR_BUILD_FOLDER}/appveyor.yml -Destination ${env:APPVEYOR_BUILD_FOLDER}/ext/glslang/glslang/GenericCodeGen/CodeGen.cpp -Force
+
+      run_script "build/cache_read.ps1"
+
+
+      # Save temp changes
+      git add . -A
+      git commit -m "old changes" --quiet
+
+      # echo "`n"
+      cd ${env:APPVEYOR_BUILD_FOLDER}/${env:BUILD_PATH}
+
+
+
+  - cmd: |
+      cmd.exe /c %Build%
+
+
+
+
+on_success:
+
+  - ps: |
+      $env:BUILD_SUCCESS = 1
+
+
+
+
+on_finish:
+
+  - ps: |
+      cd ${env:APPVEYOR_BUILD_FOLDER}
+      del git-version.cpp
+
+
+      run_script "build/cache_write.ps1"
